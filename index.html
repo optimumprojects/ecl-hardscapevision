@@ -1299,7 +1299,7 @@ function buildOption1Prompt(color, hasBorder, freeText) {
 
   let prompt = "The first image is a before picture of a residential backyard taken from a drone that needs landscaping. The second image is a Unilock stone catalogue reference page — use it to match the exact texture and appearance of the stone product.";
 
-  prompt += "\n\nCRITICAL: The coloured drawings on the photo are a blueprint — follow them like a map. Trace the exact outlines and place each feature precisely where it is drawn. Do not move, resize, reshape, or reimagine the position of anything. Do not add ANY features that are not described below. After placing all features, completely erase every visible coloured line, outline, and annotation so no drawn marks remain in the final image.";
+  prompt += "\n\nCRITICAL: The coloured drawings on the photo are a blueprint — follow them like a map. Trace the exact outlines and place each feature precisely where it is drawn. Do not move, resize, reshape, or reimagine the position of anything. Do not add ANY features that are not described below. After placing all features, completely erase every visible drawn line, outline, and annotation — including any white lines, red lines, blue shapes, green circles, yellow lines, orange circles, purple circles, and brown marks. No drawn marks of any colour including white should remain in the final image.";
 
   prompt += "\n\nThe red hand drawn areas are where paver stones go — use Unilock Beacon Hill Smooth in " + color + colorHint + " as referenced in the catalogue image. ONLY put stone where there is red drawn on the image. Any part of the yard without red markings must stay exactly as it appears in the original photo — existing concrete pads stay as concrete, existing lawn stays as lawn, existing mulch stays as mulch, existing gardens stay as gardens. Do not cover concrete with stone. Do not extend the patio beyond the red drawn boundary. Do not connect separate drawn areas unless they are drawn as connected.";
 
@@ -1338,7 +1338,7 @@ function buildOption1Prompt(color, hasBorder, freeText) {
     prompt += "\n\nAdditional details: " + freeText;
   }
 
-  prompt += "\n\nAll hand drawn parts are for reference and must be replaced with realistic features. No coloured lines or annotations should be visible in the final result. The result must be a bird's eye drone photograph from the exact same overhead angle as the original. Do not tilt the camera. Do not add text, labels, or watermarks.";
+  prompt += "\n\nAll hand drawn parts are for reference and must be replaced with realistic features. No drawn lines or annotations of any colour — including white — should be visible in the final result. The result must be a bird's eye drone photograph from the exact same overhead angle as the original. Do not tilt the camera. Do not add text, labels, or watermarks.";
 
   return prompt;
 }
