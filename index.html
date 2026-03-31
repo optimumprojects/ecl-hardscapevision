@@ -1301,7 +1301,7 @@ function buildOption1Prompt(color, hasBorder, freeText) {
 
   prompt += "\n\nCRITICAL: The coloured drawings on the photo are a blueprint — follow them like a map. Trace the exact outlines and place each feature precisely where it is drawn. Do not move, resize, reshape, or reimagine the position of anything. Do not add ANY features that are not described below. After placing all features, completely erase every visible coloured line, outline, and annotation so no drawn marks remain in the final image.";
 
-  prompt += "\n\nThe red hand drawn areas are where paver stones go — use Unilock Beacon Hill Smooth in " + color + colorHint + " as referenced in the catalogue image. Only put stone where there is red — any part of the yard without red markings stays exactly as it appears in the original photo including existing gardens, lawn, mulch beds, trees and fences.";
+  prompt += "\n\nThe red hand drawn areas are where paver stones go — use Unilock Beacon Hill Smooth in " + color + colorHint + " as referenced in the catalogue image. ONLY put stone where there is red drawn on the image. Any part of the yard without red markings must stay exactly as it appears in the original photo — existing concrete pads stay as concrete, existing lawn stays as lawn, existing mulch stays as mulch, existing gardens stay as gardens. Do not cover concrete with stone. Do not extend the patio beyond the red drawn boundary. Do not connect separate drawn areas unless they are drawn as connected.";
 
   if (hasBorder) {
     prompt += " The entire perimeter of the stone patio will have a Midnight Sky (dark charcoal) colour soldier course border.";
@@ -1318,13 +1318,13 @@ function buildOption1Prompt(color, hasBorder, freeText) {
   if (hasWalls) features.push("The yellow drawn lines are garden walls or retaining walls — they must follow the exact drawn lines and not extend beyond them.");
   if (hasBoulders) features.push("The brown drawn marks are natural stone boulders.");
   if (hasFirePit) features.push("The orange drawn circle is a fire pit.");
-  if (hasPropertyLine) features.push("The white drawn line marks the property boundary — absolutely nothing should be placed beyond this line. All hardscape, furniture, landscaping, and features must stay inside the property line.");
+  if (hasPropertyLine) features.push("The white drawn line marks the property boundary — absolutely nothing should be placed beyond this line. All hardscape, furniture, landscaping, and features must stay inside the property line. Remove the white line from the final image — it is a reference only and must not be visible.");
 
   if (features.length > 0) {
     prompt += "\n\n" + features.join(" ");
   }
 
-  prompt += "\n\nDo not add any features that are not listed above. Only the features described in this prompt should appear in the final image.";
+  prompt += "\n\nDo not add any features that are not listed above. No garden walls, no retaining walls, no pools, no hot tubs, no boulders, no fire pits, no water features, no structures unless specifically listed above. Only the features described in this prompt should appear in the final image.";
 
   prompt += "\n\nIf there are disconnected paver rectangles that don't connect to the main patio, those are stepping stones using the same " + color + " stone with existing mulch between them — in the exact positions drawn.";
 
