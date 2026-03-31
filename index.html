@@ -417,6 +417,7 @@
         <div class="legend-item"><div class="legend-dot" style="background:#FDD835"></div>Walls</div>
         <div class="legend-item"><div class="legend-dot" style="background:#6D4C41"></div>Boulders</div>
         <div class="legend-item"><div class="legend-dot" style="background:#FF8F00"></div>Fire Pit</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#FFFFFF;border:1px solid #666"></div>Property Line</div>
       </div>
     </div>
 
@@ -476,6 +477,11 @@
           <input type="checkbox" id="hasFirePit" style="width:20px;height:20px;min-width:20px;accent-color:var(--gold)">
           <span class="legend-dot" style="background:#FF8F00;width:12px;height:12px;min-width:12px"></span>
           <span style="font-size:13px;color:var(--text)">Fire Pit</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg2);border-radius:6px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+          <input type="checkbox" id="hasPropertyLine" style="width:20px;height:20px;min-width:20px;accent-color:var(--gold)">
+          <span class="legend-dot" style="background:#FFFFFF;width:12px;height:12px;min-width:12px;border:1px solid var(--border)"></span>
+          <span style="font-size:13px;color:var(--text)">Property Line</span>
         </label>
       </div>
     </div>
@@ -1282,6 +1288,7 @@ function buildOption1Prompt(color, hasBorder, freeText) {
   const hasWalls = $('hasWalls').checked;
   const hasBoulders = $('hasBoulders').checked;
   const hasFirePit = $('hasFirePit').checked;
+  const hasPropertyLine = $('hasPropertyLine').checked;
 
   let prompt = "The first image is a before picture of a residential backyard taken from a drone that needs landscaping. The second image is a Unilock stone catalogue reference page — use it to match the exact texture and appearance of the stone product.";
 
@@ -1304,6 +1311,7 @@ function buildOption1Prompt(color, hasBorder, freeText) {
   if (hasWalls) features.push("The yellow drawn lines are garden walls or retaining walls — they must follow the exact drawn lines and not extend beyond them.");
   if (hasBoulders) features.push("The brown drawn marks are natural stone boulders.");
   if (hasFirePit) features.push("The orange drawn circle is a fire pit.");
+  if (hasPropertyLine) features.push("The white drawn line marks the property boundary — absolutely nothing should be placed beyond this line. All hardscape, furniture, landscaping, and features must stay inside the property line.");
 
   if (features.length > 0) {
     prompt += "\n\n" + features.join(" ");
@@ -1348,7 +1356,7 @@ function buildOption2Prompt(color, hasBorder) {
     prompt += "\n\nNo perimeter border.";
   }
 
-  prompt += "\n\nThe layout must be identical to the first image — same patio boundaries, same pool shape and position, same walkway locations, same gardens, same lawn areas. Do not extend the patio into areas that are lawn or garden in the first image. Do not add, remove, or move anything. The only changes should be: the stone product changes to Windermere Flagstone in " + color + " which is a smaller format paver with a simpler repeating pattern and fewer size variations than premium stone lines, the furniture becomes simpler basic pieces, and the landscaping stays clean but minimal. The patio shape, boundaries, pool, walkways and everything else stays exactly where it is — do not change any layout.";
+  prompt += "\n\nThe layout must be identical to the first image — same patio boundaries, same pool shape and position, same walkway locations, same gardens, same lawn areas. Do not extend the patio into areas that are lawn, garden, concrete, or any other surface in the first image. Any area that is NOT paver stone in the first image must remain exactly as it appears — concrete pads stay as concrete, lawn stays as lawn, mulch stays as mulch, gravel stays as gravel. Do not cover or replace non-stone surfaces with stone. Do not add new patio areas, new walkways, or any new features that are not in the first image. Do not add a pool or any water feature unless one exists in the first image. The only changes should be: the stone product changes to Windermere Flagstone in " + color + " which is a smaller format paver with a simpler repeating pattern and fewer size variations than premium stone lines, the furniture becomes simpler basic pieces, and the landscaping stays clean but minimal. Everything else stays exactly where it is — do not change any layout.";
 
   prompt += "\n\nThe result must be a bird's eye drone photograph from the same overhead angle. Do not change the camera angle. Do not add any text, labels or watermarks.";
 
@@ -1369,9 +1377,9 @@ function buildOption3Prompt(color) {
 
   prompt += "\n\nThe SECOND image is a Unilock product catalogue page for Umbriano. This catalogue page shows several colour swatches — you need to find the one labeled " + color + " specifically and use that colour only. Umbriano has a smooth modern surface with subtle colour variation — it must look distinctly different from the stone in the first image. The colour " + color + colorHint + " from the catalogue page must be accurate — look carefully at the specific swatch labeled " + color + " on the catalogue page and match its actual appearance precisely.";
 
-  prompt += "\n\nInclude a contrasting Midnight Sky soldier course perimeter border around the patio edge and an inset decorative border sitting about 1 foot inside the patio edge creating a framed effect. The pool coping should also be Midnight Sky.";
+  prompt += "\n\nInclude a contrasting Midnight Sky soldier course perimeter border around the patio edge and an inset decorative border sitting about 1 foot inside the patio edge creating a framed effect. If there is a pool in the first image, the pool coping should also be Midnight Sky.";
 
-  prompt += "\n\nThe layout must be identical to the first image — same patio boundaries, same pool shape and position, same walkway locations. Do not add, remove, or move anything structural. The changes should be: the stone product changes to Umbriano in " + color + ", add integrated LED path lighting along walkways in warm white, add subtle garden lighting in landscaping beds, place 2-3 larger decorative natural stone boulders near garden areas bordering the patio as accents, upgrade to high-end modern outdoor furniture with premium cushions, and make landscaping lush and mature with layered plantings. This is the premium showcase version — aspirational and luxurious.";
+  prompt += "\n\nThe layout must be identical to the first image — same patio boundaries, same pool shape and position if one exists, same walkway locations. Do not extend the patio into areas that are not stone in the first image. Any area that is NOT paver stone in the first image must remain exactly as it appears — concrete pads stay as concrete, lawn stays as lawn, mulch stays as mulch. Do not add new patio areas, new walkways, or any new structures. Do not add a pool, hot tub, or any features that do not exist in the first image. Stay within the visible property boundaries — do not extend anything beyond the edges of the property shown. The only changes should be: the stone product changes to Umbriano in " + color + ", add integrated LED path lighting along existing walkways in warm white, add subtle garden lighting in existing landscaping beds, place 2-3 decorative natural stone boulders near existing garden areas bordering the patio as accents, upgrade to high-end modern outdoor furniture with premium cushions, and make existing landscaping lush and mature with layered plantings. Premium means better materials and finishes on the same layout — not more stuff.";
 
   prompt += "\n\nThe result must be a bird's eye drone photograph from the same overhead angle. Do not change the camera angle. Do not add any text, labels or watermarks.";
 
@@ -2174,6 +2182,13 @@ $('startOverBtn').onclick = () => {
   $('borderToggle').checked = false;
   state.hasBorder = false;
   $('descriptionBox').value = '';
+  $('hasPool').checked = false;
+  $('hasHotTub').checked = false;
+  $('hasShrubs').checked = false;
+  $('hasWalls').checked = false;
+  $('hasBoulders').checked = false;
+  $('hasFirePit').checked = false;
+  $('hasPropertyLine').checked = false;
   $('budgetColor').value = '';
   $('budgetBorderToggle').checked = false;
   $('premiumColor').value = '';
