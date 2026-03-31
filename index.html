@@ -1698,8 +1698,9 @@ $('confirmRegenBtn3').onclick = () => confirmRegen(3);
 
 $('approveAllBtn').onclick = () => goToStep(6);
 
-// Save all images as downloads
+// Save all images — works on iPad by opening in new tabs for long-press save
 function downloadImage(dataUri, filename) {
+  // Try native download first (works on desktop)
   const a = document.createElement('a');
   a.href = dataUri;
   a.download = filename;
@@ -1708,16 +1709,29 @@ function downloadImage(dataUri, filename) {
   document.body.removeChild(a);
 }
 
+function openImageForSave(dataUri) {
+  const w = window.open();
+  if (w) {
+    w.document.write('<html><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh"><img src="' + dataUri + '" style="max-width:100%;max-height:100vh"><p style="position:fixed;top:10px;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,0.7);padding:8px 16px;border-radius:8px;font-family:sans-serif;font-size:14px">Press and hold the image to save</p></body></html>');
+    w.document.close();
+  }
+}
+
 $('saveAllImagesBtn').onclick = () => {
-  const timestamp = new Date().toISOString().slice(0,10);
-  const name = state.prospectName ? state.prospectName.replace(/[^a-zA-Z0-9]/g, '_') : 'session';
-  if (state.image1) downloadImage(state.image1, 'ECL_' + name + '_recommended_' + timestamp + '.png');
-  setTimeout(() => {
-    if (state.image2) downloadImage(state.image2, 'ECL_' + name + '_essential_' + timestamp + '.png');
-  }, 500);
-  setTimeout(() => {
-    if (state.image3) downloadImage(state.image3, 'ECL_' + name + '_premium_' + timestamp + '.png');
-  }, 1000);
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  if (isIOS) {
+    // iPad: open each image in a new tab for long-press saving
+    if (state.image1) openImageForSave(state.image1);
+    setTimeout(() => { if (state.image2) openImageForSave(state.image2); }, 300);
+    setTimeout(() => { if (state.image3) openImageForSave(state.image3); }, 600);
+  } else {
+    // Desktop: direct download
+    const timestamp = new Date().toISOString().slice(0,10);
+    const name = state.prospectName ? state.prospectName.replace(/[^a-zA-Z0-9]/g, '_') : 'session';
+    if (state.image1) downloadImage(state.image1, 'ECL_' + name + '_recommended_' + timestamp + '.png');
+    setTimeout(() => { if (state.image2) downloadImage(state.image2, 'ECL_' + name + '_essential_' + timestamp + '.png'); }, 500);
+    setTimeout(() => { if (state.image3) downloadImage(state.image3, 'ECL_' + name + '_premium_' + timestamp + '.png'); }, 1000);
+  }
 };
 
 // ══════════════════════════════════════════════════════════════
