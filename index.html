@@ -1698,40 +1698,22 @@ $('confirmRegenBtn3').onclick = () => confirmRegen(3);
 
 $('approveAllBtn').onclick = () => goToStep(6);
 
-// Save all images — works on iPad by opening in new tabs for long-press save
-function downloadImage(dataUri, filename) {
-  // Try native download first (works on desktop)
-  const a = document.createElement('a');
-  a.href = dataUri;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
-
-function openImageForSave(dataUri) {
-  const w = window.open();
-  if (w) {
-    w.document.write('<html><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh"><img src="' + dataUri + '" style="max-width:100%;max-height:100vh"><p style="position:fixed;top:10px;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,0.7);padding:8px 16px;border-radius:8px;font-family:sans-serif;font-size:14px">Press and hold the image to save</p></body></html>');
-    w.document.close();
-  }
-}
-
+// Save all images — shows in overlay for iPad long-press save
 $('saveAllImagesBtn').onclick = () => {
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  if (isIOS) {
-    // iPad: open each image in a new tab for long-press saving
-    if (state.image1) openImageForSave(state.image1);
-    setTimeout(() => { if (state.image2) openImageForSave(state.image2); }, 300);
-    setTimeout(() => { if (state.image3) openImageForSave(state.image3); }, 600);
-  } else {
-    // Desktop: direct download
-    const timestamp = new Date().toISOString().slice(0,10);
-    const name = state.prospectName ? state.prospectName.replace(/[^a-zA-Z0-9]/g, '_') : 'session';
-    if (state.image1) downloadImage(state.image1, 'ECL_' + name + '_recommended_' + timestamp + '.png');
-    setTimeout(() => { if (state.image2) downloadImage(state.image2, 'ECL_' + name + '_essential_' + timestamp + '.png'); }, 500);
-    setTimeout(() => { if (state.image3) downloadImage(state.image3, 'ECL_' + name + '_premium_' + timestamp + '.png'); }, 1000);
-  }
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch';
+
+  let html = '<div style="max-width:600px;margin:0 auto">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><p style="color:#fff;font-family:Outfit,sans-serif;font-size:15px;font-weight:600;margin:0">Press and hold each image to save</p>';
+  html += '<button onclick="this.closest(\'div[style]\').parentElement.remove()" style="background:var(--gold);color:#000;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif">Done</button></div>';
+
+  if (state.image1) html += '<p style="color:#D4A057;font-size:12px;font-weight:600;margin:0 0 4px;font-family:Outfit,sans-serif">RECOMMENDED</p><img src="' + state.image1 + '" style="width:100%;border-radius:8px;margin-bottom:16px;-webkit-touch-callout:default">';
+  if (state.image2) html += '<p style="color:#9BA0B2;font-size:12px;font-weight:600;margin:0 0 4px;font-family:Outfit,sans-serif">ESSENTIAL</p><img src="' + state.image2 + '" style="width:100%;border-radius:8px;margin-bottom:16px;-webkit-touch-callout:default">';
+  if (state.image3) html += '<p style="color:#C4A0E8;font-size:12px;font-weight:600;margin:0 0 4px;font-family:Outfit,sans-serif">PREMIUM</p><img src="' + state.image3 + '" style="width:100%;border-radius:8px;margin-bottom:16px;-webkit-touch-callout:default">';
+
+  html += '</div>';
+  overlay.innerHTML = html;
+  document.body.appendChild(overlay);
 };
 
 // ══════════════════════════════════════════════════════════════
