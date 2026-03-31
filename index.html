@@ -442,6 +442,39 @@
       </div>
     </div>
 
+    <!-- Features in drawing -->
+    <div class="card">
+      <label>What's in your drawing?<span class="required">check all that apply</span></label>
+      <p class="text-xs text-muted" style="margin-bottom:10px">Only check the colours you actually drew. Patio (red) is always included.</p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px">
+        <label class="toggle-row" style="padding:6px 8px; background:var(--bg2); border-radius:6px; cursor:pointer">
+          <span style="display:flex;align-items:center;gap:8px"><span class="legend-dot" style="background:#1E88E5;width:12px;height:12px"></span><span style="font-size:13px">Pool</span></span>
+          <input type="checkbox" id="hasPool" style="width:18px;height:18px;accent-color:var(--gold)">
+        </label>
+        <label class="toggle-row" style="padding:6px 8px; background:var(--bg2); border-radius:6px; cursor:pointer">
+          <span style="display:flex;align-items:center;gap:8px"><span class="legend-dot" style="background:#8E24AA;width:12px;height:12px"></span><span style="font-size:13px">Hot Tub</span></span>
+          <input type="checkbox" id="hasHotTub" style="width:18px;height:18px;accent-color:var(--gold)">
+        </label>
+        <label class="toggle-row" style="padding:6px 8px; background:var(--bg2); border-radius:6px; cursor:pointer">
+          <span style="display:flex;align-items:center;gap:8px"><span class="legend-dot" style="background:#43A047;width:12px;height:12px"></span><span style="font-size:13px">Shrubs / Garden</span></span>
+          <input type="checkbox" id="hasShrubs" style="width:18px;height:18px;accent-color:var(--gold)">
+        </label>
+        <label class="toggle-row" style="padding:6px 8px; background:var(--bg2); border-radius:6px; cursor:pointer">
+          <span style="display:flex;align-items:center;gap:8px"><span class="legend-dot" style="background:#FDD835;width:12px;height:12px"></span><span style="font-size:13px">Walls</span></span>
+          <input type="checkbox" id="hasWalls" style="width:18px;height:18px;accent-color:var(--gold)">
+        </label>
+        <label class="toggle-row" style="padding:6px 8px; background:var(--bg2); border-radius:6px; cursor:pointer">
+          <span style="display:flex;align-items:center;gap:8px"><span class="legend-dot" style="background:#6D4C41;width:12px;height:12px"></span><span style="font-size:13px">Boulders</span></span>
+          <input type="checkbox" id="hasBoulders" style="width:18px;height:18px;accent-color:var(--gold)">
+        </label>
+        <label class="toggle-row" style="padding:6px 8px; background:var(--bg2); border-radius:6px; cursor:pointer">
+          <span style="display:flex;align-items:center;gap:8px"><span class="legend-dot" style="background:#FF8F00;width:12px;height:12px"></span><span style="font-size:13px">Fire Pit</span></span>
+          <input type="checkbox" id="hasFirePit" style="width:18px;height:18px;accent-color:var(--gold)">
+        </label>
+      </div>
+    </div>
+
+    <!-- Description -->
     <div class="card">
       <div class="form-group">
         <label>Placement Notes<span class="optional">optional</span></label>
@@ -1236,27 +1269,55 @@ function buildOption1Prompt(color, hasBorder, freeText) {
   const colorDesc = colorDescriptions[color] || '';
   const colorHint = colorDesc ? ' (' + colorDesc + ')' : '';
 
+  // Read which features are checked
+  const hasPool = $('hasPool').checked;
+  const hasHotTub = $('hasHotTub').checked;
+  const hasShrubs = $('hasShrubs').checked;
+  const hasWalls = $('hasWalls').checked;
+  const hasBoulders = $('hasBoulders').checked;
+  const hasFirePit = $('hasFirePit').checked;
+
   let prompt = "The first image is a before picture of a residential backyard taken from a drone that needs landscaping. The second image is a Unilock stone catalogue reference page — use it to match the exact texture and appearance of the stone product.";
 
-  prompt += "\n\nCRITICAL: You must trace the exact outlines of every coloured annotation in the photo and place each feature precisely where it is drawn. Do not move, resize, reshape, or reimagine the position of anything. The coloured drawings are a blueprint — follow them like a map. Only features that are physically drawn with colour annotations should appear in the final image — do not add pools, hot tubs, fire pits, garden walls, boulders or any other features unless they are explicitly drawn with their respective colour. After placing all drawn features, completely erase every visible coloured line, outline, and annotation so that no drawn marks remain visible in the final image.";
+  prompt += "\n\nCRITICAL: The coloured drawings on the photo are a blueprint — follow them like a map. Trace the exact outlines and place each feature precisely where it is drawn. Do not move, resize, reshape, or reimagine the position of anything. Do not add ANY features that are not described below. After placing all features, completely erase every visible coloured line, outline, and annotation so no drawn marks remain in the final image.";
 
   prompt += "\n\nThe red hand drawn areas are where paver stones go — use Unilock Beacon Hill Smooth in " + color + colorHint + " as referenced in the catalogue image. Only put stone where there is red — any part of the yard without red markings stays exactly as it appears in the original photo including existing gardens, lawn, mulch beds, trees and fences.";
 
   if (hasBorder) {
-    prompt += " The entire perimeter of the stone patio will have a Midnight Sky (dark charcoal) colour soldier course border. If a pool was drawn in blue, the border also runs directly around the pool edge as coping following the exact contour of the pool shape, and the pool coping should match the paver colour.";
+    prompt += " The entire perimeter of the stone patio will have a Midnight Sky (dark charcoal) colour soldier course border.";
+    if (hasPool) {
+      prompt += " The border also runs directly around the pool edge as coping following the exact contour of the pool shape, and the pool coping should match the paver colour.";
+    }
   }
 
-  prompt += "\n\nONLY add features that are explicitly drawn with coloured annotations. If there is no blue drawn area, there is NO pool — do not add one. If there is no purple circle, there is NO hot tub — do not add one. If there is no orange circle, there is NO fire pit — do not add one. Here is the colour legend for annotations that MAY or MAY NOT be present in the drawing: blue = pool, purple = above ground hot tub with cover on, green circles = shrubs using plants common to Southern Ontario like boxwood and ornamental grasses not tropical, yellow lines = garden walls or retaining walls (must follow the exact drawn lines and not extend beyond them), brown marks = boulders, orange circles = fire pit. If a colour is not drawn in the image, that feature does not exist — do not invent it.";
+  // Only describe features that are actually checked
+  let features = [];
+  if (hasPool) features.push("The blue drawn area is a pool — it must be the exact shape, size, and position as drawn. Do not change it.");
+  if (hasHotTub) features.push("The purple drawn circle is an above ground hot tub with its cover on — place it exactly where the purple is drawn.");
+  if (hasShrubs) features.push("The green drawn circles are shrubs and garden landscaping — use plants common to Southern Ontario like boxwood, ornamental grasses, and hydrangeas, not tropical.");
+  if (hasWalls) features.push("The yellow drawn lines are garden walls or retaining walls — they must follow the exact drawn lines and not extend beyond them.");
+  if (hasBoulders) features.push("The brown drawn marks are natural stone boulders.");
+  if (hasFirePit) features.push("The orange drawn circle is a fire pit.");
+
+  if (features.length > 0) {
+    prompt += "\n\n" + features.join(" ");
+  }
+
+  prompt += "\n\nDo not add any features that are not listed above. Only the features described in this prompt should appear in the final image.";
 
   prompt += "\n\nIf there are disconnected paver rectangles that don't connect to the main patio, those are stepping stones using the same " + color + " stone with existing mulch between them — in the exact positions drawn.";
 
-  prompt += "\n\nPlace a modern simple outdoor dining set on the patio near the main entrance to the house. Only add pool lounge chairs if a pool was drawn in blue. Keep furniture modern and neutral-toned.";
+  prompt += "\n\nPlace a modern simple outdoor dining set on the patio near the main entrance to the house.";
+  if (hasPool) {
+    prompt += " Add pool lounge chairs along the longest side of the pool.";
+  }
+  prompt += " Keep furniture modern and neutral-toned.";
 
   if (freeText) {
     prompt += "\n\nAdditional details: " + freeText;
   }
 
-  prompt += "\n\nAll hand drawn parts are for reference and must be replaced with realistic features. No coloured lines or annotations should be visible in the final result. The result must be a bird's eye drone photograph from the exact same overhead angle as the original. Do not tilt the camera. Do not add text, labels, or watermarks. Do not add features that are not drawn.";
+  prompt += "\n\nAll hand drawn parts are for reference and must be replaced with realistic features. No coloured lines or annotations should be visible in the final result. The result must be a bird's eye drone photograph from the exact same overhead angle as the original. Do not tilt the camera. Do not add text, labels, or watermarks.";
 
   return prompt;
 }
