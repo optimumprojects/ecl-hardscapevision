@@ -743,6 +743,13 @@
     </div>
 
     <div class="card">
+      <div class="form-group">
+        <label>Custom Notes for Quote<span class="optional">optional — appears on page 1</span></label>
+        <textarea id="customQuoteNotes" rows="3" placeholder="e.g., 'Includes removal of existing concrete pad', 'Grading and drainage included', 'Approximate 2-week timeline'..."></textarea>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="form-row">
         <div class="form-group">
           <label>Offer Valid For</label>
@@ -1789,7 +1796,7 @@ $('generatePdfBtn').onclick = async () => {
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(7);
       pdf.setTextColor(140, 144, 156);
-      pdf.text('ECL Hardscaping  \u2022  info@eclhardscape.ca  \u2022  (905) 555-0123  \u2022  eclhardscape.ca', W / 2, fy, { align: 'center' });
+      pdf.text('ECL Hardscaping  \u2022  info@everchanginglandscape.com  \u2022  (416) 729-3606  \u2022  everchanginglandscape.com', W / 2, fy, { align: 'center' });
       pdf.text('This is a preliminary estimate only. Final pricing subject to detailed site assessment and material availability.', W / 2, fy + 4, { align: 'center' });
     }
 
@@ -1905,6 +1912,22 @@ $('generatePdfBtn').onclick = async () => {
       pdf.text('*Estimate \u00B115%. Final quote', detailX, dy);
       dy += 3.5;
       pdf.text('based on detailed site assessment.', detailX, dy);
+    }
+
+    // Custom notes from Christian
+    const customNotes = $('customQuoteNotes').value.trim();
+    if (customNotes) {
+      dy += 6;
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(7.5);
+      pdf.setTextColor(80, 84, 96);
+      const noteLines = pdf.splitTextToSize(customNotes, detailW);
+      noteLines.forEach(function(line) {
+        if (dy < (H - 14 - 32 - 5)) { // don't overflow into offer block
+          pdf.text(line, detailX, dy);
+          dy += 3.5;
+        }
+      });
     }
 
     // Offer block at bottom of page 1
@@ -2189,6 +2212,7 @@ $('startOverBtn').onclick = () => {
   $('hasBoulders').checked = false;
   $('hasFirePit').checked = false;
   $('hasPropertyLine').checked = false;
+  $('customQuoteNotes').value = '';
   $('budgetColor').value = '';
   $('budgetBorderToggle').checked = false;
   $('premiumColor').value = '';
